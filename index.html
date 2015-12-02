@@ -1,0 +1,42 @@
+<html ng-app="ExampleApp">
+
+<head>
+
+  <title>angular-scroll-magic</title>
+
+  <link rel="stylesheet" type="text/css" href="example/styles.css">
+
+</head>
+
+<body ng-controller="ExampleCtrl as vm" sm-scene="pin1" duration="50%" offset="50%" trigger-hook="0.25">
+
+  <h1>Scroll ☝︎</h1>
+
+  <div class="dummy"></div>
+
+  <div class="pin" sm-pin="pin1"></div>
+
+  <div class="trigger" sm-scene="mixed1" duration="500" trigger-hook="0.75"></div>
+
+  <div class="tween1" sm-tween="mixed1" duration="1" vars="{scale: 1.2, yoyo: true, repeat: 2}" sm-class-toggle="classToggleScene" classes="pink"></div>
+
+  <div class="mixed" sm-pin="mixed1" sm-tween="mixed1" duration="1" from-vars="{opacity: 0, delay: 2}"></div>
+
+  <span sm-scene="tween2" trigger-element="null" duration="100%" offset="200" trigger-hook="0.4"></span>
+
+  <div class="tween2" sm-tween="tween2" from-vars="{left: '100%'}" to-vars="vm.toVars"></div>
+
+  <span sm-scene="classToggleScene" trigger-element="null" duration="50%" offset="500" trigger-hook="0.2"></span>
+
+  <script type="text/javascript" src="bower_components/gsap/src/minified/TweenMax.min.js"></script>
+  <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="bower_components/scrollmagic/scrollmagic/minified/ScrollMagic.min.js"></script>
+  <script type="text/javascript" src="bower_components/scrollmagic/scrollmagic/minified/plugins/animation.gsap.min.js"></script>
+  <script type="text/javascript" src="bower_components/scrollmagic/scrollmagic/minified/plugins/debug.addIndicators.min.js"></script>
+
+  <script type="text/javascript" src="angular-scroll-magic.js"></script>
+  <script type="text/javascript" src="example/app.js"></script>
+
+</body>
+
+</html>
