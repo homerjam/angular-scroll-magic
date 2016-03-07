@@ -88,7 +88,7 @@
           var triggerHook = scope.$eval(attrs.triggerHook);
 
           if (typeof duration === 'function') {
-            duration = duration.bind(null, sceneId, triggerElement);
+            duration = duration.bind(null, sceneId, triggerElement, offset, triggerHook);
           }
 
           var scene = new ScrollMagic.Scene({
