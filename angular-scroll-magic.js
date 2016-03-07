@@ -42,12 +42,18 @@
         sceneObservers[id].push(fn);
       };
 
-      service.getSceneId = function (id) {
-        return id && id.length ? id : Object.keys(scenes)[0] || 0;
+      service.getSceneIds = function (id) {
+        var defaultSceneId = Object.keys(scenes)[0] || 0;
+
+        if (Object.prototype.toString.call(id) === '[object Array]') {
+          return id;
+        }
+
+        return id && id.length ? [id] : [defaultSceneId];
       };
 
       service.getScene = function (id) {
-        id = id || service.getSceneId(id);
+        id = id || service.getSceneIds(id)[0];
 
         return scenes[id];
       };
@@ -74,7 +80,7 @@
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
-          var sceneId = ScrollMagicService.getSceneId(attrs.smScene);
+          var sceneId = ScrollMagicService.getSceneIds(attrs.smScene)[0];
 
           if (ScrollMagicService.getScene(sceneId)) {
             return;
@@ -111,7 +117,7 @@
           scope.$on('$destroy', function () {
             ScrollMagicService.destroyScene(sceneId);
           });
-        }
+        },
       };
     }])
 
@@ -119,14 +125,16 @@
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
-          var sceneId = ScrollMagicService.getSceneId(attrs.smPin);
+          var sceneIds = ScrollMagicService.getSceneIds(scope.$eval(attrs.smPin) || attrs.smPin);
 
-          var init = function (scene) {
-            scene.setPin(element[0]);
-          };
+          sceneIds.forEach(function (sceneId, i) {
+            var init = function (scene) {
+              scene.setPin(element[0]);
+            };
 
-          ScrollMagicService.onSceneAdded(sceneId, init);
-        }
+            ScrollMagicService.onSceneAdded(sceneId, init);
+          });
+        },
       };
     }])
 
@@ -134,16 +142,22 @@
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
-          var sceneId = ScrollMagicService.getSceneId(attrs.smClassToggle);
+          var sceneIds = ScrollMagicService.getSceneIds(scope.$eval(attrs.smClassToggle) || attrs.smClassToggle);
 
-          var classes = scope.$eval(attrs.classes) || attrs.classes;
+          sceneIds.forEach(function (sceneId, i) {
+            var classes = scope.$eval(attrs.classes) || attrs.classes;
 
-          var init = function (scene) {
-            scene.setClassToggle(element[0], classes);
-          };
+            if (Object.prototype.toString.call(classes) === '[object Array]') {
+              classes = classes[i];
+            }
 
-          ScrollMagicService.onSceneAdded(sceneId, init);
-        }
+            var init = function (scene) {
+              scene.setClassToggle(element[0], classes);
+            };
+
+            ScrollMagicService.onSceneAdded(sceneId, init);
+          });
+        },
       };
     }])
 
@@ -151,7 +165,7 @@
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
-          var sceneId = ScrollMagicService.getSceneId(attrs.smTween);
+          var sceneId = ScrollMagicService.getSceneIds(attrs.smTween)[0];
 
           var duration = scope.$eval(attrs.duration);
           var fromVars = scope.$eval(attrs.fromVars);
@@ -172,7 +186,7 @@
           };
 
           ScrollMagicService.onSceneAdded(sceneId, init);
-        }
+        },
       };
     }]);
 
