@@ -1,6 +1,6 @@
 {
   "name": "angular-scroll-magic",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An angular directive for ScrollMagic, define pins and tweens in markup",
   "main": "index.js",
   "repository": {
@@ -13,12 +13,12 @@
   "author": "Homerjam <jameshomer85@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "angular": "^1.4.8",
-    "gsap": "^1.18.0",
+    "angular": "^1.5.0",
+    "gsap": "^1.18.2",
     "scrollmagic": "^2.0.5"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-webserver": "^0.9.1"
   }
 }

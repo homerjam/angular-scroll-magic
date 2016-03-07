@@ -1,5 +1,4 @@
 (function () {
-
   angular.module('hj.scrollMagic', [])
 
     .provider('scrollMagic', function () {
@@ -27,7 +26,7 @@
 
         sceneObservers[id].forEach(function (fn, i, arr) {
           arr.splice(i, 1)[0].apply(null, args);
-        })
+        });
       };
 
       service.onSceneAdded = function (id, fn) {
@@ -51,7 +50,7 @@
         id = id || service.getSceneId(id);
 
         return scenes[id];
-      }
+      };
 
       service.setScene = function (id, scene) {
         scenes[id] = scene;
@@ -88,6 +87,10 @@
             : scope.$eval(attrs.offset);
           var triggerHook = scope.$eval(attrs.triggerHook);
 
+          if (typeof duration === 'function') {
+            duration = duration.bind(null, triggerElement);
+          }
+
           var scene = new ScrollMagic.Scene({
             triggerElement: triggerElement,
             duration: duration !== undefined ? duration : 0,
@@ -108,7 +111,7 @@
           scope.$on('$destroy', function () {
             ScrollMagicService.destroyScene(sceneId);
           });
-        }
+        },
       };
     }])
 
@@ -123,7 +126,7 @@
           };
 
           ScrollMagicService.onSceneAdded(sceneId, init);
-        }
+        },
       };
     }])
 
@@ -169,7 +172,7 @@
           };
 
           ScrollMagicService.onSceneAdded(sceneId, init);
-        }
+        },
       };
     }]);
 
