@@ -18,6 +18,12 @@ http://homerjam.github.io/angular-scroll-magic/
 
 ## Usage
 
+Turn on indicators to help during development
+```js
+// In your app config
+scrollMagicProvider.addIndicators = true;
+```
+
 ### smScene
 Create a scene, by applying the `sm-scene` directive this determines the timing for the desired behaviour
 ```html

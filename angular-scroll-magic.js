@@ -88,7 +88,7 @@
           var triggerHook = scope.$eval(attrs.triggerHook);
 
           if (typeof duration === 'function') {
-            duration = duration.bind(null, triggerElement);
+            duration = duration.bind(null, sceneId, triggerElement);
           }
 
           var scene = new ScrollMagic.Scene({
@@ -111,7 +111,7 @@
           scope.$on('$destroy', function () {
             ScrollMagicService.destroyScene(sceneId);
           });
-        },
+        }
       };
     }])
 
@@ -126,7 +126,7 @@
           };
 
           ScrollMagicService.onSceneAdded(sceneId, init);
-        },
+        }
       };
     }])
 
@@ -172,7 +172,7 @@
           };
 
           ScrollMagicService.onSceneAdded(sceneId, init);
-        },
+        }
       };
     }]);
 
