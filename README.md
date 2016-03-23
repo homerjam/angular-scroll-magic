@@ -68,3 +68,20 @@ ScrollMagic doesn't work as expected with Webpack, try using the `script-loader`
     import 'script!scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators';
 
     import angularScrollMagic from 'angular-scroll-magic';
+```
+
+Or manually declare dependencies for scrollmagic in your bower.json file:
+
+```
+"overrides": {
+  "scrollmagic": {
+    "main": [
+      "scrollmagic/uncompressed/ScrollMagic.js",
+      "scrollmagic/uncompressed/plugins/animation.gsap.js",
+      "scrollmagic/uncompressed/plugins/animation.velocity.js",
+      "scrollmagic/uncompressed/plugins/debug.addIndicators.js",
+      "scrollmagic/uncompressed/plugins/jquery.ScrollMagic.js"
+    ]   
+  }   
+}
+```
