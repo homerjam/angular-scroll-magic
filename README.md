@@ -57,6 +57,14 @@ Create a scene, by applying the `sm-scene` directive this determines the timing 
 ```
 `sm-pin`: [string] the identifier of the scene (trigger) to use
 
+### ScrollMagicService
+Allows access to scenes from your controllers.
+```html
+<div sm-scene="myScene"></div>
+```
+```js
+var scene = ScrollMagicService.getScene('myScene');
+```
 
 ## Gotchas
 
