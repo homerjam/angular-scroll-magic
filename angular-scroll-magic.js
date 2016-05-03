@@ -76,7 +76,7 @@
       return service;
     }])
 
-    .directive('smScene', ['$document', 'scrollMagic', 'ScrollMagicService', function ($document, scrollMagic, ScrollMagicService) {
+    .directive('smScene', ['$document', '$timeout', 'scrollMagic', 'ScrollMagicService', function ($document, $timeout, scrollMagic, ScrollMagicService) {
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -86,33 +86,37 @@
             return;
           }
 
-          var triggerElement = attrs.triggerElement ? scope.$eval(attrs.triggerElement) : element[0];
-          var duration = attrs.duration && attrs.duration.indexOf('%') !== -1 ? attrs.duration : scope.$eval(attrs.duration);
-          var offset = attrs.offset && attrs.offset.indexOf('%') !== -1
-            ? triggerElement ? triggerElement.clientHeight * (parseFloat(attrs.offset) / 100) : $document.scrollHeight
-            : scope.$eval(attrs.offset);
-          var triggerHook = scope.$eval(attrs.triggerHook);
+          var init = function () {
+            var triggerElement = attrs.triggerElement ? scope.$eval(attrs.triggerElement) : element[0];
+            var duration = attrs.duration && attrs.duration.indexOf('%') !== -1 ? attrs.duration : scope.$eval(attrs.duration);
+            var offset = attrs.offset && attrs.offset.indexOf('%') !== -1
+              ? triggerElement ? triggerElement.clientHeight * (parseFloat(attrs.offset) / 100) : $document.scrollHeight
+              : scope.$eval(attrs.offset);
+            var triggerHook = scope.$eval(attrs.triggerHook);
 
-          if (typeof duration === 'function') {
-            duration = duration.bind(null, sceneId, triggerElement, offset, triggerHook);
-          }
+            if (typeof duration === 'function') {
+              duration = duration.bind(null, sceneId, triggerElement, offset, triggerHook);
+            }
 
-          var scene = new ScrollMagic.Scene({
-            triggerElement: triggerElement,
-            duration: duration !== undefined ? duration : 0,
-            offset: offset !== undefined ? offset : 0,
-            triggerHook: triggerHook !== undefined ? triggerHook : 0.5,
-          });
-
-          if (scrollMagic.addIndicators) {
-            scene.addIndicators({
-              name: sceneId,
+            var scene = new ScrollMagic.Scene({
+              triggerElement: triggerElement,
+              duration: duration !== undefined ? duration : 0,
+              offset: offset !== undefined ? offset : 0,
+              triggerHook: triggerHook !== undefined ? triggerHook : 0.5,
             });
-          }
 
-          scene.addTo(ScrollMagicService.controller);
+            if (scrollMagic.addIndicators) {
+              scene.addIndicators({
+                name: sceneId,
+              });
+            }
 
-          ScrollMagicService.setScene(sceneId, scene);
+            scene.addTo(ScrollMagicService.controller);
+
+            ScrollMagicService.setScene(sceneId, scene);
+          };
+
+          $timeout(init);
 
           scope.$on('$destroy', function () {
             ScrollMagicService.destroyScene(sceneId);
@@ -127,7 +131,7 @@
         link: function (scope, element, attrs) {
           var sceneIds = ScrollMagicService.getSceneIds(scope.$eval(attrs.smPin) || attrs.smPin);
 
-          sceneIds.forEach(function (sceneId, i) {
+          sceneIds.forEach(function (sceneId) {
             var init = function (scene) {
               scene.setPin(element[0]);
             };

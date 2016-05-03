@@ -4,6 +4,8 @@
 
   <title>angular-scroll-magic</title>
 
+  <meta charset="utf-8">
+
   <link rel="stylesheet" type="text/css" href="example/styles.css">
 
 </head>
@@ -27,6 +29,13 @@
   <div class="tween2" sm-tween="tween2" from-vars="{left: '100%'}" to-vars="vm.toVars"></div>
 
   <span sm-scene="classToggleScene" trigger-element="null" duration="50%" offset="500" trigger-hook="0.2"></span>
+
+  <div class="repeat-tweens" ng-repeat="i in [1, 2, 3, 4]">
+    <div sm-scene="tween-{{$index}}" trigger-element="'#tween-{{$index}}'" duration="100%" offset="0"> </div>
+    <div id="tween-{{$index}}" sm-tween="tween-{{$index}}" from-vars="{x: '0%', y: '0px'}" to-vars="{x: (i * 10) + '%', y: (i * 200) + 'px'}">
+      <h3>Repeat tween {{$index}}</h3>
+    </div>
+  </div>
 
   <script type="text/javascript" src="bower_components/gsap/src/minified/TweenMax.min.js"></script>
   <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
