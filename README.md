@@ -60,16 +60,16 @@ Create a scene, by applying the `sm-scene` directive this determines the timing 
 ### ScrollMagicService
 Allows access to scenes from your controllers.
 ```html
-<!-- define scene in your template -->
+<!-- Define scene in your template -->
 <div sm-scene="myScene"></div>
 ```
 ```js
-// add an observer which will trigger on initialisation of the scene
+// Add an observer which will trigger on initialisation of the scene
 ScrollMagicService.onSceneAdded('myScene', function(scene) {
     // do stuff with `scene`
 });
 
-// or after initialisation
+// Or after initialisation
 var scene = ScrollMagicService.getScene('myScene');
 ```
 
