@@ -29,33 +29,33 @@ Create a scene, by applying the `sm-scene` directive this determines the timing 
 ```html
 <div sm-scene="sceneId" duration="500" offset="100" trigger-hook="0.75"></div>
 ```
-`sm-scene`: [string] scene identifier
-`trigger-element`: (optional) [element|selector] defaults to the directive element
-`duration`: (optional) [integer|string|function] if using a string with a `%` symbol this will be calculated against viewport height
-`offset`: (optional) [integer|string] if using a string with a `%` symbol this will be calculated against the height of the trigger element (if specified) or document
-`trigger-hook`: (optional) [float] this determines the position of the trigger point relative to the viewport
+* `sm-scene` (string) : scene identifier
+* `trigger-element` [(element|selector)] : defaults to the directive element
+* `duration` [(integer|string|function)] : if using a string with a `%` symbol this will be calculated against viewport height
+* `offset` [(integer|string)] : if using a string with a `%` symbol this will be calculated against the height of the trigger element (if specified) or document
+* `trigger-hook` [(float)] : this determines the position of the trigger point relative to the viewport
 
 ### smTween
 ```html
 <div sm-tween="sceneId" duration="1" from-vars="{left: '100%'}" to-vars="{left: '0%'}"></div>
 ```
-`sm-tween`: [string] the identifier of the scene (trigger) to use
-`duration`: [number] duration of tween relative to length of scene
-`from-vars`: (optional) [object]
-`to-vars|vars`: [object] options used by GSAP such as CSS properties
+* `sm-tween` (string) : the identifier of the scene (trigger) to use
+* `duration` (number) : duration of tween relative to length of scene
+* `from-vars` [(object)]
+* `to-vars|vars` (object) : options used by GSAP such as CSS properties
 
 ### smClassToggle
 ```html
 <div sm-class-toggle="sceneId" classes=""></div>
 ```
-`sm-class-toggle`: [string] the identifier of the scene (trigger) to use
-`classes`: [string] the classes to add/remove
+* `sm-class-toggle` (string) : the identifier of the scene (trigger) to use
+* `classes` (string) : the classes to add/remove
 
 ### smPin
 ```html
 <div sm-pin="sceneId"></div>
 ```
-`sm-pin`: [string] the identifier of the scene (trigger) to use
+* `sm-pin` (string) : the identifier of the scene (trigger) to use
 
 ### ScrollMagicService
 Allows access to scenes from your controllers.
