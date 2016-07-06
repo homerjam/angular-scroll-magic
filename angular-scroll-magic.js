@@ -78,9 +78,9 @@
 
     .directive('smScene', ['$document', '$timeout', 'scrollMagic', 'ScrollMagicService', function ($document, $timeout, scrollMagic, ScrollMagicService) {
       return {
-        restrict: 'A',
+        restrict: 'AE',
         link: function (scope, element, attrs) {
-          var sceneId = ScrollMagicService.getSceneIds(attrs.smScene)[0];
+          var sceneId = ScrollMagicService.getSceneIds(attrs.smScene || attrs.sceneId)[0];
 
           if (ScrollMagicService.getScene(sceneId)) {
             return;
@@ -127,9 +127,9 @@
 
     .directive('smPin', ['ScrollMagicService', function (ScrollMagicService) {
       return {
-        restrict: 'A',
+        restrict: 'AE',
         link: function (scope, element, attrs) {
-          var sceneIds = ScrollMagicService.getSceneIds(scope.$eval(attrs.smPin) || attrs.smPin);
+          var sceneIds = ScrollMagicService.getSceneIds(scope.$eval(attrs.smPin) || attrs.smPin || attrs.sceneId);
 
           sceneIds.forEach(function (sceneId) {
             var init = function (scene) {
@@ -144,9 +144,9 @@
 
     .directive('smClassToggle', ['ScrollMagicService', function (ScrollMagicService) {
       return {
-        restrict: 'A',
+        restrict: 'AE',
         link: function (scope, element, attrs) {
-          var sceneIds = ScrollMagicService.getSceneIds(scope.$eval(attrs.smClassToggle) || attrs.smClassToggle);
+          var sceneIds = ScrollMagicService.getSceneIds(scope.$eval(attrs.smClassToggle) || attrs.smClassToggle || attrs.sceneId);
 
           sceneIds.forEach(function (sceneId, i) {
             var classes = scope.$eval(attrs.classes) || attrs.classes;
@@ -167,9 +167,9 @@
 
     .directive('smTween', ['ScrollMagicService', function (ScrollMagicService) {
       return {
-        restrict: 'A',
+        restrict: 'AE',
         link: function (scope, element, attrs) {
-          var sceneId = ScrollMagicService.getSceneIds(attrs.smTween)[0];
+          var sceneId = ScrollMagicService.getSceneIds(scope.$eval(attrs.smTween) || attrs.smTween || attrs.sceneId)[0];
 
           var duration = scope.$eval(attrs.duration);
           var fromVars = scope.$eval(attrs.fromVars);
