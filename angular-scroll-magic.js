@@ -67,6 +67,8 @@
       };
 
       service.destroyScene = function (id) {
+        service.controller.removeScene(scenes[id]);
+
         scenes[id].destroy();
 
         delete sceneObservers[id];
@@ -83,7 +85,7 @@
           var sceneId = ScrollMagicService.getSceneIds(attrs.smScene || attrs.sceneId)[0];
 
           if (ScrollMagicService.getScene(sceneId)) {
-            return;
+            ScrollMagicService.destroyScene(sceneId);
           }
 
           var init = function () {
@@ -117,10 +119,6 @@
           };
 
           $timeout(init);
-
-          scope.$on('$destroy', function () {
-            ScrollMagicService.destroyScene(sceneId);
-          });
         },
       };
     }])
