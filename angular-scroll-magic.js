@@ -117,9 +117,20 @@
 
           var init = function () {
             var triggerElement = ctrl.triggerElement ? ctrl.triggerElement : $element[0];
-            var offset = ctrl.offset && typeof ctrl.offset !== 'string'
-              ? triggerElement ? triggerElement.clientHeight * (parseFloat(ctrl.offset) / 100) : $document.scrollHeight
-              : ctrl.offset;
+
+            var offset;
+
+            if (typeof ctrl.offset === 'string') {
+              offset = triggerElement.clientHeight * (parseFloat(ctrl.offset) / 100);
+            }
+
+            if (typeof ctrl.offset === 'number') {
+              offset = ctrl.offset;
+            }
+
+            if (typeof ctrl.offset === 'function') {
+              offset = ctrl.offset();
+            }
 
             if (typeof ctrl.duration === 'function') {
               ctrl.duration = ctrl.duration.bind(null, sceneId, triggerElement, offset, ctrl.triggerHook);
