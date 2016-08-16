@@ -8,6 +8,7 @@
     "no-var": 0,
     "vars-on-top": 0,
     "padded-blocks": 0,
-    "space-before-function-paren": 0
+    "space-before-function-paren": 0,
+    "no-nested-ternary": 1
   }
 }

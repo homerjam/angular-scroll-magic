@@ -13,7 +13,7 @@
       }];
     })
 
-    .service('ScrollMagicService', ['scrollMagic', function (scrollMagic) {
+    .service('ScrollMagicService', ['$document', 'scrollMagic', function ($document, scrollMagic) {
       var service = {};
 
       service.controller = new ScrollMagic.Controller();
@@ -24,6 +24,8 @@
       var notifySceneObservers = function (id) {
         var args = Array.prototype.slice.call(arguments, 1);
 
+        args.push(id);
+
         sceneObservers[id].forEach(function (fn, i, arr) {
           arr.splice(i, 1)[0].apply(null, args);
         });
@@ -31,7 +33,7 @@
 
       service.onSceneAdded = function (id, fn) {
         if (scenes[id]) {
-          fn(scenes[id]);
+          fn(scenes[id], id);
           return;
         }
 
@@ -75,36 +77,59 @@
         delete scenes[id];
       };
 
+      service.getTargetElement = function($element, targetElement) {
+        if (targetElement) {
+          if (typeof targetElement === 'string') {
+            if (targetElement === 'parent') {
+              return $element.parent()[0];
+            }
+            return $document.querySelector(targetElement);
+          }
+          return targetElement;
+        }
+        return $element[0];
+      };
+
       return service;
     }])
 
-    .directive('smScene', ['$document', '$timeout', 'scrollMagic', 'ScrollMagicService', function ($document, $timeout, scrollMagic, ScrollMagicService) {
+    .directive('smScene', ['scrollMagic', 'ScrollMagicService', function (scrollMagic, ScrollMagicService) {
       return {
         restrict: 'AE',
-        link: function (scope, element, attrs) {
-          var sceneId = ScrollMagicService.getSceneIds(attrs.smScene || attrs.sceneId)[0];
+        scope: {
+          smScene: '=',
+          sceneId: '=',
+          triggerElement: '=',
+          duration: '=',
+          offset: '=',
+          triggerHook: '=',
+        },
+        bindToController: true,
+        controllerAs: 'vm',
+        controller: ['$scope', '$element', '$attrs', '$document', '$timeout', function ($scope, $element, $attrs, $document, $timeout) {
+          var ctrl = this;
+
+          var sceneId = ScrollMagicService.getSceneIds(ctrl.smScene || ctrl.sceneId || $attrs.smScene)[0];
 
           if (ScrollMagicService.getScene(sceneId)) {
             ScrollMagicService.destroyScene(sceneId);
           }
 
           var init = function () {
-            var triggerElement = attrs.triggerElement ? scope.$eval(attrs.triggerElement) : element[0];
-            var duration = attrs.duration && attrs.duration.indexOf('%') !== -1 ? attrs.duration : scope.$eval(attrs.duration);
-            var offset = attrs.offset && attrs.offset.indexOf('%') !== -1
-              ? triggerElement ? triggerElement.clientHeight * (parseFloat(attrs.offset) / 100) : $document.scrollHeight
-              : scope.$eval(attrs.offset);
-            var triggerHook = scope.$eval(attrs.triggerHook);
+            var triggerElement = ctrl.triggerElement ? ctrl.triggerElement : $element[0];
+            var offset = ctrl.offset && typeof ctrl.offset !== 'string'
+              ? triggerElement ? triggerElement.clientHeight * (parseFloat(ctrl.offset) / 100) : $document.scrollHeight
+              : ctrl.offset;
 
-            if (typeof duration === 'function') {
-              duration = duration.bind(null, sceneId, triggerElement, offset, triggerHook);
+            if (typeof ctrl.duration === 'function') {
+              ctrl.duration = ctrl.duration.bind(null, sceneId, triggerElement, offset, ctrl.triggerHook);
             }
 
             var scene = new ScrollMagic.Scene({
               triggerElement: triggerElement,
-              duration: duration !== undefined ? duration : 0,
+              duration: ctrl.duration !== undefined ? ctrl.duration : 0,
               offset: offset !== undefined ? offset : 0,
-              triggerHook: triggerHook !== undefined ? triggerHook : 0.5,
+              triggerHook: ctrl.triggerHook !== undefined ? ctrl.triggerHook : 0.5,
             });
 
             if (scrollMagic.addIndicators) {
@@ -119,65 +144,97 @@
           };
 
           $timeout(init);
-        },
+        }],
       };
     }])
 
     .directive('smPin', ['ScrollMagicService', function (ScrollMagicService) {
       return {
         restrict: 'AE',
-        link: function (scope, element, attrs) {
-          var sceneIds = ScrollMagicService.getSceneIds(scope.$eval(attrs.smPin) || attrs.smPin || attrs.sceneId);
+        scope: {
+          smPin: '=',
+          sceneId: '=',
+          targetElement: '=',
+        },
+        bindToController: true,
+        controllerAs: 'vm',
+        controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+          var ctrl = this;
+
+          var sceneIds = ScrollMagicService.getSceneIds(ctrl.smPin || ctrl.sceneId || $attrs.smPin);
 
           sceneIds.forEach(function (sceneId) {
-            var init = function (scene) {
-              scene.setPin(element[0]);
+            var init = function (scene, sceneId) {
+              scene.setPin(ScrollMagicService.getTargetElement($element, ctrl.targetElement));
             };
 
             ScrollMagicService.onSceneAdded(sceneId, init);
           });
-        },
+        }],
       };
     }])
 
     .directive('smClassToggle', ['ScrollMagicService', function (ScrollMagicService) {
       return {
         restrict: 'AE',
-        link: function (scope, element, attrs) {
-          var sceneIds = ScrollMagicService.getSceneIds(scope.$eval(attrs.smClassToggle) || attrs.smClassToggle || attrs.sceneId);
+        scope: {
+          smClassToggle: '=',
+          sceneId: '=',
+          classes: '=',
+          targetElement: '=',
+        },
+        bindToController: true,
+        controllerAs: 'vm',
+        controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+          var ctrl = this;
+
+          var sceneIds = ScrollMagicService.getSceneIds(ctrl.smClassToggle || ctrl.sceneId || $attrs.smClassToggle);
 
           sceneIds.forEach(function (sceneId, i) {
-            var classes = scope.$eval(attrs.classes) || attrs.classes;
+            var classes = ctrl.classes;
 
             if (Object.prototype.toString.call(classes) === '[object Array]') {
               classes = classes[i];
             }
 
-            var init = function (scene) {
-              scene.setClassToggle(element[0], classes);
+            var init = function (scene, sceneId) {
+              scene.setClassToggle(ScrollMagicService.getTargetElement($element, ctrl.targetElement), classes);
             };
 
             ScrollMagicService.onSceneAdded(sceneId, init);
           });
-        },
+        }],
       };
     }])
 
     .directive('smTween', ['ScrollMagicService', function (ScrollMagicService) {
       return {
         restrict: 'AE',
-        link: function (scope, element, attrs) {
-          var sceneId = ScrollMagicService.getSceneIds(scope.$eval(attrs.smTween) || attrs.smTween || attrs.sceneId)[0];
+        scope: {
+          smTween: '=',
+          sceneId: '=',
+          duration: '=',
+          vars: '=',
+          fromVars: '=',
+          toVars: '=',
+          targetElement: '=',
+        },
+        bindToController: true,
+        controllerAs: 'vm',
+        controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+          var ctrl = this;
 
-          var duration = scope.$eval(attrs.duration);
-          var fromVars = scope.$eval(attrs.fromVars);
-          var toVars = scope.$eval(attrs.toVars || attrs.vars);
+          var sceneId = ScrollMagicService.getSceneIds(ctrl.smTween || ctrl.sceneId || $attrs.smTween)[0];
+
+          var duration = ctrl.duration;
+          var fromVars = angular.copy(ctrl.fromVars);
+          var toVars = angular.copy(ctrl.toVars || ctrl.vars);
 
           var method = fromVars && toVars ? 'fromTo' : fromVars ? 'from' : 'to';
 
-          var tween = TweenMax[method](element[0], duration || 1, fromVars || toVars, toVars);
+          var tween = TweenMax[method](ScrollMagicService.getTargetElement($element, ctrl.targetElement), duration || 1, fromVars || toVars, toVars);
 
-          var init = function (scene) {
+          var init = function (scene, sceneId) {
             if (!scene.timeline) {
               scene.timeline = new TimelineMax();
             }
@@ -188,7 +245,7 @@
           };
 
           ScrollMagicService.onSceneAdded(sceneId, init);
-        },
+        }],
       };
     }]);
 

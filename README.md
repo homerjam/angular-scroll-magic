@@ -7,6 +7,11 @@ An angular directive for ScrollMagic, define pins and tweens in markup
 http://homerjam.github.io/angular-scroll-magic/
 
 
+## Changelog
+
+* `0.1.0`: __BREAKING__ Directives now using `bindToController` and isolated scope this provides better support for defining params in controllers. You may need to put quotes around strings in your templates.
+
+
 ## Installation
 
 1. Install via npm `npm i -S angular-scroll-magic`
@@ -31,7 +36,7 @@ Create a scene, by applying the `sm-scene` directive this determines the timing 
 ```
 * `sm-scene` (string) : scene identifier
 * `trigger-element` [(element|selector)] : defaults to the directive element
-* `duration` [(integer|string|function)] : if using a string with a `%` symbol this will be calculated against viewport height
+* `duration` [(integer|string)] : if using a string with a `%` symbol this will be calculated against viewport height
 * `offset` [(integer|string)] : if using a string with a `%` symbol this will be calculated against the height of the trigger element (if specified) or document
 * `trigger-hook` [(float)] : this determines the position of the trigger point relative to the viewport
 
@@ -61,7 +66,7 @@ Create a scene, by applying the `sm-scene` directive this determines the timing 
 Allows access to scenes from your controllers.
 ```html
 <!-- Define scene in your template -->
-<div sm-scene="myScene"></div>
+<div sm-scene="'myScene'"></div>
 ```
 ```js
 // Add an observer which will trigger on initialisation of the scene
@@ -96,7 +101,7 @@ Or manually declare dependencies for scrollmagic in your bower.json file:
       "scrollmagic/uncompressed/plugins/animation.velocity.js",
       "scrollmagic/uncompressed/plugins/debug.addIndicators.js",
       "scrollmagic/uncompressed/plugins/jquery.ScrollMagic.js"
-    ]   
-  }   
+    ]
+  }
 }
 ```
