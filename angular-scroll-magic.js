@@ -150,7 +150,9 @@
                 var locals = {
                   $event: event,
                 };
-                ctrl.onEnter(locals);
+                $scope.$apply(function () {
+                  ctrl.onEnter(locals);
+                });
               });
             }
 
@@ -159,7 +161,9 @@
                 var locals = {
                   $event: event,
                 };
-                ctrl.onLeave(locals);
+                $scope.$apply(function () {
+                  ctrl.onLeave(locals);
+                });
               });
             }
 
