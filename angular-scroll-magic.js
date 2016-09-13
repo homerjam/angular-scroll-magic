@@ -103,6 +103,8 @@
           duration: '=',
           offset: '=',
           triggerHook: '=',
+          onEnter: '&',
+          onLeave: '&',
         },
         bindToController: true,
         controllerAs: 'vm',
@@ -142,6 +144,24 @@
               offset: offset !== undefined ? offset : 0,
               triggerHook: ctrl.triggerHook !== undefined ? ctrl.triggerHook : 0.5,
             });
+
+            if (ctrl.onEnter) {
+              scene.on('enter', function (event) {
+                var locals = {
+                  $event: event,
+                };
+                ctrl.onEnter(locals);
+              });
+            }
+
+            if (ctrl.onLeave) {
+              scene.on('leave', function (event) {
+                var locals = {
+                  $event: event,
+                };
+                ctrl.onLeave(locals);
+              });
+            }
 
             if (scrollMagic.addIndicators) {
               scene.addIndicators({
