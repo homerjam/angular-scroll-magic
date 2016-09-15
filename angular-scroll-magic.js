@@ -111,6 +111,8 @@
         controller: ['$scope', '$element', '$attrs', '$document', '$timeout', function ($scope, $element, $attrs, $document, $timeout) {
           var ctrl = this;
 
+          var scene;
+
           var sceneId = ScrollMagicService.getSceneIds(ctrl.smScene || ctrl.sceneId || $attrs.smScene)[0];
 
           if (ScrollMagicService.getScene(sceneId)) {
@@ -138,7 +140,7 @@
               ctrl.duration = ctrl.duration.bind(null, sceneId, triggerElement, offset, ctrl.triggerHook);
             }
 
-            var scene = new ScrollMagic.Scene({
+            scene = new ScrollMagic.Scene({
               triggerElement: triggerElement,
               duration: ctrl.duration !== undefined ? ctrl.duration : 0,
               offset: offset !== undefined ? offset : 0,
@@ -176,6 +178,10 @@
             scene.addTo(ScrollMagicService.controller);
 
             ScrollMagicService.setScene(sceneId, scene);
+          };
+
+          ctrl.$onDestroy = function () {
+            scene.destroy();
           };
 
           $timeout(init);
