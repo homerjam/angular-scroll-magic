@@ -270,15 +270,14 @@
           var duration = ctrl.duration;
           var fromVars = angular.copy(ctrl.fromVars);
           var toVars = angular.copy(ctrl.toVars || ctrl.vars);
-
           var method = fromVars && toVars ? 'fromTo' : fromVars ? 'from' : 'to';
-
-          var tween = TweenMax[method](ScrollMagicService.getTargetElement($element, ctrl.targetElement), duration || 1, fromVars || toVars, toVars);
 
           var init = function (scene, sceneId) {
             if (!scene.timeline) {
               scene.timeline = new TimelineMax();
             }
+
+            var tween = TweenMax[method](ScrollMagicService.getTargetElement($element, ctrl.targetElement), duration || 1, fromVars || toVars, toVars);
 
             scene.timeline.add([tween], 'normal');
 
@@ -290,4 +289,4 @@
       };
     }]);
 
-})();
+}());
