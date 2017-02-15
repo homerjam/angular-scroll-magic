@@ -37,17 +37,17 @@
   <span sm-scene="'classToggleScene'" trigger-element="null" duration="'50%'" offset="500" trigger-hook="0.2"></span>
 
   <div class="repeat-tweens" ng-repeat="i in [1, 2, 3, 4]">
-    <div sm-scene="'tween-' + $index" trigger-element="'#tween-{{$index}}'" duration="'100%'" offset="0"> </div>
+    <div sm-scene="'tween-' + $index" duration="'100%'" offset="0"> </div>
     <div id="tween-{{$index}}" sm-tween="'tween-' + $index" from-vars="{x: '0%', y: '0px'}" to-vars="{x: (i * 10) + '%', y: (i * 200) + 'px'}">
       <h3>Repeat tween {{$index}}</h3>
     </div>
   </div>
 
-  <script type="text/javascript" src="bower_components/gsap/src/minified/TweenMax.min.js"></script>
-  <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
-  <script type="text/javascript" src="bower_components/scrollmagic/scrollmagic/minified/ScrollMagic.min.js"></script>
-  <script type="text/javascript" src="bower_components/scrollmagic/scrollmagic/minified/plugins/animation.gsap.min.js"></script>
-  <script type="text/javascript" src="bower_components/scrollmagic/scrollmagic/minified/plugins/debug.addIndicators.min.js"></script>
+  <script type="text/javascript" src="bower_components/gsap/src/uncompressed/TweenMax.js"></script>
+  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="bower_components/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js"></script>
+  <script type="text/javascript" src="bower_components/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js"></script>
+  <script type="text/javascript" src="bower_components/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators.js"></script>
 
   <script type="text/javascript" src="angular-scroll-magic.js"></script>
   <script type="text/javascript" src="example/app.js"></script>

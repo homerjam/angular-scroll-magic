@@ -1,6 +1,12 @@
 (function () {
   angular.module('hj.scrollMagic', [])
 
+    .config(['$compileProvider', function($compileProvider) {
+      if ($compileProvider.preAssignBindingsEnabled) {
+        $compileProvider.preAssignBindingsEnabled(true);
+      }
+    }])
+
     .provider('scrollMagic', function () {
       var self = this;
 
