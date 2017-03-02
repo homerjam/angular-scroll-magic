@@ -1,7 +1,7 @@
 (function () {
   angular.module('hj.scrollMagic', [])
 
-    .config(['$compileProvider', function($compileProvider) {
+    .config(['$compileProvider', function ($compileProvider) {
       if ($compileProvider.preAssignBindingsEnabled) {
         $compileProvider.preAssignBindingsEnabled(true);
       }
@@ -32,9 +32,11 @@
 
         args.push(id);
 
-        sceneObservers[id].forEach(function (fn, i, arr) {
-          arr.splice(i, 1)[0].apply(null, args);
+        sceneObservers[id].forEach(function (fn) {
+          fn.apply(null, args);
         });
+
+        sceneObservers[id] = [];
       };
 
       service.onSceneAdded = function (id, fn) {

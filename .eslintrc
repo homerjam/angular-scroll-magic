@@ -9,6 +9,9 @@
     "vars-on-top": 0,
     "padded-blocks": 0,
     "space-before-function-paren": 0,
-    "no-nested-ternary": 1
+    "no-nested-ternary": 1,
+    "no-undef": 1,
+    "no-unused-vars": 1,
+    "max-len": 0
   }
 }
