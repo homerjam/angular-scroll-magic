@@ -22,7 +22,7 @@
     .service('ScrollMagicService', ['$document', 'scrollMagic', function ($document, scrollMagic) {
       var service = {};
 
-      service.controller = new ScrollMagic.Controller();
+      service.controller = new ScrollWizardry.Controller();
 
       var scenes = {};
       var sceneObservers = {};
@@ -36,7 +36,9 @@
           fn.apply(null, args);
         });
 
-        sceneObservers[id] = [];
+        sceneObservers[id] = sceneObservers[id].filter(function (fn) {
+          return fn.persist;
+        });
       };
 
       service.onSceneAdded = function (id, fn) {
@@ -81,7 +83,14 @@
 
         scenes[id].destroy();
 
-        delete sceneObservers[id];
+        sceneObservers[id] = sceneObservers[id].filter(function (fn) {
+          return fn.persist;
+        });
+
+        if (sceneObservers[id].length === 0) {
+          delete sceneObservers[id];
+        }
+
         delete scenes[id];
       };
 
@@ -148,7 +157,7 @@
               ctrl.duration = ctrl.duration.bind(null, sceneId, triggerElement, offset, ctrl.triggerHook);
             }
 
-            scene = new ScrollMagic.Scene({
+            scene = new ScrollWizardry.Scene({
               triggerElement: triggerElement,
               duration: ctrl.duration !== undefined ? ctrl.duration : 0,
               offset: offset !== undefined ? offset : 0,
@@ -204,6 +213,7 @@
           smPin: '=',
           sceneId: '=',
           targetElement: '=',
+          persist: '=',
         },
         bindToController: true,
         controllerAs: 'vm',
@@ -216,6 +226,8 @@
             var init = function (scene, sceneId) {
               scene.setPin(ScrollMagicService.getTargetElement($element, ctrl.targetElement));
             };
+
+            init.persist = !!ctrl.persist;
 
             ScrollMagicService.onSceneAdded(sceneId, init);
           });
@@ -231,6 +243,7 @@
           sceneId: '=',
           classes: '=',
           targetElement: '=',
+          persist: '=',
         },
         bindToController: true,
         controllerAs: 'vm',
@@ -250,6 +263,8 @@
               scene.setClassToggle(ScrollMagicService.getTargetElement($element, ctrl.targetElement), classes);
             };
 
+            init.persist = !!ctrl.persist;
+
             ScrollMagicService.onSceneAdded(sceneId, init);
           });
         }],
@@ -267,6 +282,7 @@
           fromVars: '=',
           toVars: '=',
           targetElement: '=',
+          persist: '=',
         },
         bindToController: true,
         controllerAs: 'vm',
@@ -287,10 +303,12 @@
 
             var tween = TweenMax[method](ScrollMagicService.getTargetElement($element, ctrl.targetElement), duration || 1, fromVars || toVars, toVars);
 
-            scene.timeline.add([tween], 'normal');
+            scene.timeline.add([tween], 0, 'normal');
 
             scene.setTween(scene.timeline);
           };
+
+          init.persist = !!ctrl.persist;
 
           ScrollMagicService.onSceneAdded(sceneId, init);
         }],

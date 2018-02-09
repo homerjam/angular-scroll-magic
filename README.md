@@ -1,6 +1,6 @@
 # angular-scroll-magic
 
-An angular directive for ScrollMagic, define pins and tweens in markup
+An angular directive for ScrollWizardry, define pins and tweens in markup
 
 ## Demo
 
@@ -9,6 +9,9 @@ http://homerjam.github.io/angular-scroll-magic/
 
 ## Changelog
 
+* `0.2.0`: Now using `scrollwizardy` instead of `ScrollMagic`
+
+
 * `0.1.0`: __BREAKING__ Directives now using `bindToController` and isolated scope this provides better support for defining params in controllers. You may need to put quotes around strings in your templates.
 
 
@@ -16,7 +19,7 @@ http://homerjam.github.io/angular-scroll-magic/
 
 1. Install via npm `npm i -S angular-scroll-magic`
 
-2. Include the necessary files and dependencies (`ScrollMagic`, `GSAP`) on your page or in your build process
+2. Include the necessary files and dependencies (`ScrollWizardry`, `GSAP`) on your page or in your build process
 
 2. Add `hj.scrollMagic` to app's module dependencies
 
@@ -48,6 +51,7 @@ Create a scene, by applying the `sm-scene` directive this determines the timing 
 * `duration` (number) : duration of tween relative to length of scene
 * `from-vars` [(object)]
 * `to-vars|vars` (object) : options used by GSAP such as CSS properties
+* `persist` (boolean) : persist directive between life times
 
 ### smClassToggle
 ```html
@@ -55,12 +59,14 @@ Create a scene, by applying the `sm-scene` directive this determines the timing 
 ```
 * `sm-class-toggle` (string) : the identifier of the scene (trigger) to use
 * `classes` (string) : the classes to add/remove
+* `persist` (boolean) : persist directive between life times
 
 ### smPin
 ```html
 <div sm-pin="sceneId"></div>
 ```
 * `sm-pin` (string) : the identifier of the scene (trigger) to use
+* `persist` (boolean) : persist directive between life times
 
 ### ScrollMagicService
 Allows access to scenes from your controllers.
@@ -76,32 +82,4 @@ ScrollMagicService.onSceneAdded('myScene', function(scene) {
 
 // Or after initialisation
 var scene = ScrollMagicService.getScene('myScene');
-```
-
-## Gotchas
-
-ScrollMagic doesn't work as expected with Webpack, try using the `script-loader` like so:
-
-```
-    import 'script-loader!scrollmagic';
-    import 'script-loader!scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap';
-    import 'script-loader!scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators';
-
-    import angularScrollMagic from 'angular-scroll-magic';
-```
-
-Or manually declare dependencies for scrollmagic in your bower.json file:
-
-```
-"overrides": {
-  "scrollmagic": {
-    "main": [
-      "scrollmagic/uncompressed/ScrollMagic.js",
-      "scrollmagic/uncompressed/plugins/animation.gsap.js",
-      "scrollmagic/uncompressed/plugins/animation.velocity.js",
-      "scrollmagic/uncompressed/plugins/debug.addIndicators.js",
-      "scrollmagic/uncompressed/plugins/jquery.ScrollMagic.js"
-    ]
-  }
-}
 ```

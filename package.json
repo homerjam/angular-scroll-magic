@@ -12,9 +12,9 @@
   "author": "Homerjam <jameshomer85@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "angular": "^1.5.7",
-    "gsap": "^1.18.5",
-    "scrollmagic": "^2.0.5"
+    "angular": "^1.6.9",
+    "gsap": "^1.20.3",
+    "scrollwizardry": "0.0.10"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
