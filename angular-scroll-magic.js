@@ -1,9 +1,14 @@
+/* global angular, ScrollWizardry, TweenMax, TimelineMax */
+
 (function () {
   angular.module('hj.scrollMagic', [])
 
     .config(['$compileProvider', function ($compileProvider) {
       if ($compileProvider.preAssignBindingsEnabled) {
         $compileProvider.preAssignBindingsEnabled(true);
+      }
+      if ($compileProvider.strictComponentBindingsEnabled) {
+        $compileProvider.strictComponentBindingsEnabled(true);
       }
     }])
 
@@ -12,6 +17,7 @@
 
       self.addIndicators = false;
 
+      // eslint-disable-next-line
       self.$get = ['$rootScope', function ($rootScope) {
         return {
           addIndicators: self.addIndicators,
@@ -19,7 +25,7 @@
       }];
     })
 
-    .service('ScrollMagicService', ['$document', 'scrollMagic', function ($document, scrollMagic) {
+    .service('ScrollMagicService', ['$document', function ($document) {
       var service = {};
 
       service.controller = new ScrollWizardry.Controller();
@@ -114,14 +120,14 @@
       return {
         restrict: 'AE',
         scope: {
-          smScene: '=',
-          sceneId: '=',
-          triggerElement: '=',
-          duration: '=',
-          offset: '=',
-          triggerHook: '=',
-          onEnter: '&',
-          onLeave: '&',
+          smScene: '=?',
+          sceneId: '=?',
+          triggerElement: '=?',
+          duration: '=?',
+          offset: '=?',
+          triggerHook: '=?',
+          onEnter: '&?',
+          onLeave: '&?',
         },
         bindToController: true,
         controllerAs: 'vm',
@@ -210,10 +216,10 @@
       return {
         restrict: 'AE',
         scope: {
-          smPin: '=',
-          sceneId: '=',
-          targetElement: '=',
-          persist: '=',
+          smPin: '=?',
+          sceneId: '=?',
+          targetElement: '=?',
+          persist: '=?',
         },
         bindToController: true,
         controllerAs: 'vm',
@@ -223,7 +229,7 @@
           var sceneIds = ScrollMagicService.getSceneIds(ctrl.smPin || ctrl.sceneId || $attrs.smPin);
 
           sceneIds.forEach(function (sceneId) {
-            var init = function (scene, sceneId) {
+            var init = function (scene) {
               scene.setPin(ScrollMagicService.getTargetElement($element, ctrl.targetElement));
             };
 
@@ -239,11 +245,11 @@
       return {
         restrict: 'AE',
         scope: {
-          smClassToggle: '=',
-          sceneId: '=',
-          classes: '=',
-          targetElement: '=',
-          persist: '=',
+          smClassToggle: '=?',
+          sceneId: '=?',
+          classes: '=?',
+          targetElement: '=?',
+          persist: '=?',
         },
         bindToController: true,
         controllerAs: 'vm',
@@ -259,7 +265,7 @@
               classes = classes[i];
             }
 
-            var init = function (scene, sceneId) {
+            var init = function (scene) {
               scene.setClassToggle(ScrollMagicService.getTargetElement($element, ctrl.targetElement), classes);
             };
 
@@ -275,14 +281,14 @@
       return {
         restrict: 'AE',
         scope: {
-          smTween: '=',
-          sceneId: '=',
-          duration: '=',
-          vars: '=',
-          fromVars: '=',
-          toVars: '=',
-          targetElement: '=',
-          persist: '=',
+          smTween: '=?',
+          sceneId: '=?',
+          duration: '=?',
+          vars: '=?',
+          fromVars: '=?',
+          toVars: '=?',
+          targetElement: '=?',
+          persist: '=?',
         },
         bindToController: true,
         controllerAs: 'vm',
@@ -296,7 +302,7 @@
           var toVars = angular.copy(ctrl.toVars || ctrl.vars);
           var method = fromVars && toVars ? 'fromTo' : fromVars ? 'from' : 'to';
 
-          var init = function (scene, sceneId) {
+          var init = function (scene) {
             if (!scene.timeline) {
               scene.timeline = new TimelineMax();
             }
