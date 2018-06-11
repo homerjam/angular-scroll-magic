@@ -17,6 +17,8 @@
     "scrollwizardry": "0.0.10"
   },
   "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
     "gulp": "^3.9.1",
     "gulp-webserver": "^0.9.1"
   }

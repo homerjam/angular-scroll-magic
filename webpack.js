@@ -1,5 +1,5 @@
 require('angular');
 require('gsap');
-require('scrollwizardy');
+require('scrollwizardry');
 
 module.exports = 'hj.scrollMagic';
