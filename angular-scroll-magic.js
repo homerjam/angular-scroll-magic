@@ -134,80 +134,82 @@
         controller: ['$scope', '$element', '$attrs', '$document', '$timeout', function ($scope, $element, $attrs, $document, $timeout) {
           var ctrl = this;
 
-          var scene;
+          ctrl.$onInit = function () {
+            var scene;
 
-          var sceneId = ScrollMagicService.getSceneIds(ctrl.smScene || ctrl.sceneId || $attrs.smScene)[0];
+            var sceneId = ScrollMagicService.getSceneIds(ctrl.smScene || ctrl.sceneId || $attrs.smScene)[0];
 
-          if (ScrollMagicService.getScene(sceneId)) {
-            ScrollMagicService.destroyScene(sceneId);
-          }
-
-          var init = function () {
-            var triggerElement = ctrl.triggerElement ? ctrl.triggerElement : $element[0];
-
-            var offset;
-
-            if (typeof ctrl.offset === 'string') {
-              offset = triggerElement.clientHeight * (parseFloat(ctrl.offset) / 100);
+            if (ScrollMagicService.getScene(sceneId)) {
+              ScrollMagicService.destroyScene(sceneId);
             }
 
-            if (typeof ctrl.offset === 'number') {
-              offset = ctrl.offset;
-            }
+            var init = function () {
+              var triggerElement = ctrl.triggerElement ? ctrl.triggerElement : $element[0];
 
-            if (typeof ctrl.offset === 'function') {
-              offset = ctrl.offset();
-            }
+              var offset;
 
-            if (typeof ctrl.duration === 'function') {
-              ctrl.duration = ctrl.duration.bind(null, sceneId, triggerElement, offset, ctrl.triggerHook);
-            }
+              if (typeof ctrl.offset === 'string') {
+                offset = triggerElement.clientHeight * (parseFloat(ctrl.offset) / 100);
+              }
 
-            scene = new ScrollWizardry.Scene({
-              triggerElement: triggerElement,
-              duration: ctrl.duration !== undefined ? ctrl.duration : 0,
-              offset: offset !== undefined ? offset : 0,
-              triggerHook: ctrl.triggerHook !== undefined ? ctrl.triggerHook : 0.5,
-            });
+              if (typeof ctrl.offset === 'number') {
+                offset = ctrl.offset;
+              }
 
-            if (ctrl.onEnter) {
-              scene.on('enter', function (event) {
-                var locals = {
-                  $event: event,
-                };
-                $scope.$apply(function () {
-                  ctrl.onEnter(locals);
+              if (typeof ctrl.offset === 'function') {
+                offset = ctrl.offset();
+              }
+
+              if (typeof ctrl.duration === 'function') {
+                ctrl.duration = ctrl.duration.bind(null, sceneId, triggerElement, offset, ctrl.triggerHook);
+              }
+
+              scene = new ScrollWizardry.Scene({
+                triggerElement: triggerElement,
+                duration: ctrl.duration !== undefined ? ctrl.duration : 0,
+                offset: offset !== undefined ? offset : 0,
+                triggerHook: ctrl.triggerHook !== undefined ? ctrl.triggerHook : 0.5,
+              });
+
+              if (ctrl.onEnter) {
+                scene.on('enter', function (event) {
+                  var locals = {
+                    $event: event,
+                  };
+                  $scope.$apply(function () {
+                    ctrl.onEnter(locals);
+                  });
                 });
-              });
-            }
+              }
 
-            if (ctrl.onLeave) {
-              scene.on('leave', function (event) {
-                var locals = {
-                  $event: event,
-                };
-                $scope.$apply(function () {
-                  ctrl.onLeave(locals);
+              if (ctrl.onLeave) {
+                scene.on('leave', function (event) {
+                  var locals = {
+                    $event: event,
+                  };
+                  $scope.$apply(function () {
+                    ctrl.onLeave(locals);
+                  });
                 });
-              });
-            }
+              }
 
-            if (scrollMagic.addIndicators) {
-              scene.addIndicators({
-                name: sceneId,
-              });
-            }
+              if (scrollMagic.addIndicators) {
+                scene.addIndicators({
+                  name: sceneId,
+                });
+              }
 
-            scene.addTo(ScrollMagicService.controller);
+              scene.addTo(ScrollMagicService.controller);
 
-            ScrollMagicService.setScene(sceneId, scene);
+              ScrollMagicService.setScene(sceneId, scene);
+            };
+
+            ctrl.$onDestroy = function () {
+              scene.destroy();
+            };
+
+            $timeout(init);
           };
-
-          ctrl.$onDestroy = function () {
-            scene.destroy();
-          };
-
-          $timeout(init);
         }],
       };
     }])
@@ -226,17 +228,19 @@
         controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
           var ctrl = this;
 
-          var sceneIds = ScrollMagicService.getSceneIds(ctrl.smPin || ctrl.sceneId || $attrs.smPin);
+          ctrl.$onInit = function () {
+            var sceneIds = ScrollMagicService.getSceneIds(ctrl.smPin || ctrl.sceneId || $attrs.smPin);
 
-          sceneIds.forEach(function (sceneId) {
-            var init = function (scene) {
-              scene.setPin(ScrollMagicService.getTargetElement($element, ctrl.targetElement));
-            };
+            sceneIds.forEach(function (sceneId) {
+              var init = function (scene) {
+                scene.setPin(ScrollMagicService.getTargetElement($element, ctrl.targetElement));
+              };
 
-            init.persist = !!ctrl.persist;
+              init.persist = !!ctrl.persist;
 
-            ScrollMagicService.onSceneAdded(sceneId, init);
-          });
+              ScrollMagicService.onSceneAdded(sceneId, init);
+            });
+          };
         }],
       };
     }])
@@ -256,23 +260,25 @@
         controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
           var ctrl = this;
 
-          var sceneIds = ScrollMagicService.getSceneIds(ctrl.smClassToggle || ctrl.sceneId || $attrs.smClassToggle);
+          ctrl.$onInit = function () {
+            var sceneIds = ScrollMagicService.getSceneIds(ctrl.smClassToggle || ctrl.sceneId || $attrs.smClassToggle);
 
-          sceneIds.forEach(function (sceneId, i) {
-            var classes = ctrl.classes;
+            sceneIds.forEach(function (sceneId, i) {
+              var classes = ctrl.classes;
 
-            if (Object.prototype.toString.call(classes) === '[object Array]') {
-              classes = classes[i];
-            }
+              if (Object.prototype.toString.call(classes) === '[object Array]') {
+                classes = classes[i];
+              }
 
-            var init = function (scene) {
-              scene.setClassToggle(ScrollMagicService.getTargetElement($element, ctrl.targetElement), classes);
-            };
+              var init = function (scene) {
+                scene.setClassToggle(ScrollMagicService.getTargetElement($element, ctrl.targetElement), classes);
+              };
 
-            init.persist = !!ctrl.persist;
+              init.persist = !!ctrl.persist;
 
-            ScrollMagicService.onSceneAdded(sceneId, init);
-          });
+              ScrollMagicService.onSceneAdded(sceneId, init);
+            });
+          };
         }],
       };
     }])
@@ -295,28 +301,30 @@
         controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
           var ctrl = this;
 
-          var sceneId = ScrollMagicService.getSceneIds(ctrl.smTween || ctrl.sceneId || $attrs.smTween)[0];
+          ctrl.$onInit = function () {
+            var sceneId = ScrollMagicService.getSceneIds(ctrl.smTween || ctrl.sceneId || $attrs.smTween)[0];
 
-          var duration = ctrl.duration;
-          var fromVars = angular.copy(ctrl.fromVars);
-          var toVars = angular.copy(ctrl.toVars || ctrl.vars);
-          var method = fromVars && toVars ? 'fromTo' : fromVars ? 'from' : 'to';
+            var duration = ctrl.duration;
+            var fromVars = angular.copy(ctrl.fromVars);
+            var toVars = angular.copy(ctrl.toVars || ctrl.vars);
+            var method = fromVars && toVars ? 'fromTo' : fromVars ? 'from' : 'to';
 
-          var init = function (scene) {
-            if (!scene.timeline) {
-              scene.timeline = new TimelineMax();
-            }
+            var init = function (scene) {
+              if (!scene.timeline) {
+                scene.timeline = new TimelineMax();
+              }
 
-            var tween = TweenMax[method](ScrollMagicService.getTargetElement($element, ctrl.targetElement), duration || 1, fromVars || toVars, toVars);
+              var tween = TweenMax[method](ScrollMagicService.getTargetElement($element, ctrl.targetElement), duration || 1, fromVars || toVars, toVars);
 
-            scene.timeline.add([tween], 0, 'normal');
+              scene.timeline.add([tween], 0, 'normal');
 
-            scene.setTween(scene.timeline);
+              scene.setTween(scene.timeline);
+            };
+
+            init.persist = !!ctrl.persist;
+
+            ScrollMagicService.onSceneAdded(sceneId, init);
           };
-
-          init.persist = !!ctrl.persist;
-
-          ScrollMagicService.onSceneAdded(sceneId, init);
         }],
       };
     }]);
